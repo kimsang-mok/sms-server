@@ -1,0 +1,17 @@
+jwt:
+  private-key: classpath:jwt/app.key
+  public-key: classpath:jwt/app.pub
+  ttl: 15m
+
+spring:
+  application:
+    name: sms-gateway
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/sms
+    username: user
+    password: password
+
+management:
+  health:
+    redis:
+      enabled: false
