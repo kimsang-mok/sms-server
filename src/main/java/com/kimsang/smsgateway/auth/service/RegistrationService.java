@@ -2,6 +2,7 @@ package com.kimsang.smsgateway.auth.service;
 
 import com.kimsang.smsgateway.common.exceptions.CustomValidationException;
 import com.kimsang.smsgateway.user.domain.User;
+import com.kimsang.smsgateway.user.domain.UserRole;
 import com.kimsang.smsgateway.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,8 @@ public class RegistrationService {
           }
 
           user.setPassword(passwordEncoder.encode(user.getPassword()));
+          user.setRole(UserRole.DEVELOPER);
+          user.setActive(true);
           return userRepository.save(user);
         });
   }

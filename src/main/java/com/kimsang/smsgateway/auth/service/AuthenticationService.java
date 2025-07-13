@@ -20,7 +20,6 @@ public class AuthenticationService {
         request.password());
     return authenticationManager.authenticate(authToken)
         .flatMap(auth -> {
-          final var principal = auth.getPrincipal();
           final var token = jwtService.generateToken(request.username());
           return Mono.just(new AuthenticationResponseDto(token));
         });

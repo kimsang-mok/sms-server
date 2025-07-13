@@ -1,15 +1,20 @@
 jwt:
-  private-key: classpath:jwt/app.key
-  public-key: classpath:jwt/app.pub
-  ttl: 15m
+  private-key: ${JWT_PRIVATE_KEY:classpath:jwt/app.key}
+  public-key: ${JWT_PUBLIC_KEY:classpath:jwt/app.pub}
+  ttl: ${JWT_TTL:15m}
 
 spring:
   application:
     name: sms-gateway
+
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/sms
-    username: user
-    password: password
+    url: ${R2DBC_URL:r2dbc:postgresql://localhost:5432/sms}
+    username: ${R2DBC_USERNAME:user}
+    password: ${R2DBC_PASSWORD:password}
+
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
 
 management:
   health:

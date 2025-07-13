@@ -38,3 +38,5 @@ out/
 
 *.key
 *.pem
+
+.DS_Store

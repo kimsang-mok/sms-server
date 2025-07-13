@@ -11,7 +11,7 @@ public class CustomValidationException extends RuntimeException {
   private final Map<String, String> errors;
 
   public CustomValidationException(HttpStatus status, Map<String, String> errors) {
-    super("Request validation exception");
+    super("Request validation failed");
     this.status = status;
     this.errors = errors;
   }

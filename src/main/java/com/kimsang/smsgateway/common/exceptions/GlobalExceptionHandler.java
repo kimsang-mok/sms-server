@@ -11,7 +11,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +39,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public Mono<ProblemDetail> handleConstraintViolation(ConstraintViolationException ex) {
+  public Mono<ProblemDetail> handleConstraintViolationException(ConstraintViolationException ex) {
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation error occurred" +
         ".");
     log.warn("ConstraintViolationException: {}", ex.getMessage());
@@ -48,7 +47,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(AuthenticationException.class)
-  public Mono<ProblemDetail> handleAuthentication(AuthenticationException ex) {
+  public Mono<ProblemDetail> handleAuthenticationException(AuthenticationException ex) {
     return Mono.just(ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage()));
   }
 
@@ -62,26 +61,21 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(CustomValidationException.class)
-  public Mono<ProblemDetail> handleCustomValidation(CustomValidationException ex) {
-    return Mono.just(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage()));
+  public Mono<ProblemDetail> handleCustomValidationException(CustomValidationException ex) {
+    return Mono.just(ProblemDetailExt.forStatusDetailAndErrors(
+        ex.getStatus(),
+        ex.getMessage(),
+        ex.getErrors()
+    ));
   }
 
   @ExceptionHandler(NotFoundException.class)
-  public Mono<ProblemDetail> handleNotFound(NotFoundException ex) {
+  public Mono<ProblemDetail> handleNotFoundException(NotFoundException ex) {
     return Mono.just(ProblemDetail.forStatusAndDetail(ex.getStatus(), ex.getMessage()));
   }
 
-  @ExceptionHandler(ResponseStatusException.class)
-  public Mono<ProblemDetail> handleResponseStatusException(ResponseStatusException ex) {
-    HttpStatus status = HttpStatus.resolve(ex.getStatusCode().value());
-    assert status != null;
-    return Mono.just(ProblemDetail.forStatusAndDetail(
-        status,
-        ex.getReason() != null ? ex.getReason() : "Resource not found"));
-  }
-
   @ExceptionHandler(Exception.class)
-  public Mono<ProblemDetail> handleException(Exception ex) {
+  public Mono<ProblemDetail> handleUnexpectedException(Exception ex) {
     log.error("Unexpected error: ", ex);
     return Mono.just(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"));
   }
