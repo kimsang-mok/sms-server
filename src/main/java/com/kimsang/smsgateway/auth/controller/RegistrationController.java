@@ -8,6 +8,7 @@ import com.kimsang.smsgateway.auth.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -40,7 +41,9 @@ public class RegistrationController {
           }
 
           return verification.thenReturn(
-              ResponseEntity.ok(registrationMapper.toResponse(registeredUser))
+              ResponseEntity
+                  .status(HttpStatus.CREATED)
+                  .body(registrationMapper.toResponse(registeredUser))
           );
         });
   }
