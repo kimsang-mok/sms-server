@@ -21,7 +21,7 @@ public class MigrationCommandLineRunner implements CommandLineRunner {
     if (args.length > 0 && args[0].equalsIgnoreCase("--migrate")) {
       log.info("Running migration...");
 
-      String jdbcUrl = env.getProperty("spring.r2dbc.url");
+      String jdbcUrl = env.getProperty("spring.flyway.url");
       String username = env.getProperty("spring.r2dbc.username");
       String password = env.getProperty("spring.r2dbc.password");
       String locations = env.getProperty("spring.flyway.locations", "classpath:db/migration");

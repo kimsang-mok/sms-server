@@ -1,6 +1,6 @@
 package com.kimsang.smsgateway.auth.service;
 
-import com.kimsang.smsgateway.common.exceptions.CustomValidationException;
+import com.kimsang.smsgateway.common.exception.CustomValidationException;
 import com.kimsang.smsgateway.user.domain.User;
 import com.kimsang.smsgateway.user.domain.UserRole;
 import com.kimsang.smsgateway.user.repository.UserRepository;

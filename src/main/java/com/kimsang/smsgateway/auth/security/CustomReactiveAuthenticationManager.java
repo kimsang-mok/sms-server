@@ -1,8 +1,11 @@
 package com.kimsang.smsgateway.auth.security;
 
+import com.kimsang.smsgateway.auth.exception.EmailVerificationException;
+import com.kimsang.smsgateway.common.exception.NotFoundException;
 import com.kimsang.smsgateway.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,10 +26,14 @@ public class CustomReactiveAuthenticationManager implements ReactiveAuthenticati
 
     return userRepository.findByEmail(username)
         .switchIfEmpty(userRepository.findByUsername(username))
-        .switchIfEmpty(Mono.error(new BadCredentialsException("User not found")))
+        .switchIfEmpty(Mono.error(new NotFoundException("User not found")))
         .flatMap(user -> {
           if (!user.isActive()) {
-            return Mono.error(new BadCredentialsException("User is inactive"));
+            return Mono.error(new DisabledException("User is inactive"));
+          }
+
+          if (!user.isVerified()) {
+            return Mono.error(new EmailVerificationException("User is not verified"));
           }
 
           if (!passwordEncoder.matches(rawPassword, user.getPassword())) {

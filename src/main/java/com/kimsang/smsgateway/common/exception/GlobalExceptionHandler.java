@@ -1,4 +1,4 @@
-package com.kimsang.smsgateway.common.exceptions;
+package com.kimsang.smsgateway.common.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
